@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ต้นแบบ · บริการนักศึกษาต่างชาติ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#0B2A6F;--blue:#1F5BD8;--blue-600:#1849B3;--blue-50:#EEF4FF;--blue-100:#DCE7FF;--ink:#0F172A;--ink-2:#4B5A70;--ink-3:#8A97AB;--line:#E3E9F2;--bg:#F4F7FC;--green:#0E8F61;--green-50:#E6F6EF;--amber:#B26A00;--amber-50:#FFF4DC;--red:#D33A3A;--red-50:#FDECEC;--violet:#6D4AE0;--violet-50:#F1ECFF}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{font-family:'IBM Plex Sans Thai','Noto Sans Thai','Sarabun',system-ui,sans-serif;background:#D9E2F1;color:var(--ink);-webkit-font-smoothing:antialiased;display:flex;align-items:center;justify-content:center;min-height:100vh;font-size:15px;line-height:1.5}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;text-align:inherit}
+.device{width:390px;height:844px;background:var(--bg);border-radius:46px;box-shadow:0 0 0 11px #0c1322,0 30px 70px rgba(12,19,34,.35);overflow:hidden;position:relative;display:flex;flex-direction:column}
+.statusbar{height:44px;display:flex;justify-content:space-between;align-items:center;padding:0 30px;font-size:14px;font-weight:600;flex-shrink:0;background:#fff}
+.statusbar.dark{background:var(--navy);color:#fff}
+@media (max-width:520px){body{background:var(--bg);display:block}.device{width:100%;height:100vh;height:100dvh;border-radius:0;box-shadow:none}.statusbar{display:none}}
+#screen{flex:1;display:flex;flex-direction:column;min-height:0}
+.appbar{display:flex;align-items:center;gap:6px;height:58px;padding:0 8px;background:#fff;border-bottom:1px solid var(--line);flex-shrink:0}
+.ab-title{flex:1;font-weight:600;font-size:17px;line-height:1.2;padding-left:4px}
+.ab-title small{display:block;font-size:12px;font-weight:400;color:var(--ink-3)}
+.iconbtn{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;color:var(--ink)}
+.iconbtn:active{background:var(--blue-50)}
+.content{flex:1;overflow-y:auto;padding:16px 16px 28px;scroll-behavior:auto}
+.content::-webkit-scrollbar{display:none}
+svg.i{flex-shrink:0;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.card{background:#fff;border-radius:18px;border:1px solid var(--line);padding:16px}
+.sec-title{font-size:15px;font-weight:600;margin:22px 2px 10px;display:flex;justify-content:space-between;align-items:center}
+.sec-title a,.link{color:var(--blue);font-size:13.5px;font-weight:500;cursor:pointer}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;height:52px;border-radius:14px;font-weight:600;font-size:16px;width:100%;text-align:center;transition:transform .08s}
+.btn:active{transform:scale(.985)}
+.btn-primary{background:var(--blue);color:#fff}
+.btn-primary:disabled{background:#B9C6DD;cursor:not-allowed}
+.btn-ghost{background:var(--blue-50);color:var(--blue)}
+.btn-line{border:1.5px solid var(--line);background:#fff}
+.btn-sm{height:36px;font-size:13.5px;width:auto;padding:0 14px;border-radius:10px}
+.footer-cta{padding:12px 16px calc(12px + env(safe-area-inset-bottom));background:#fff;border-top:1px solid var(--line);flex-shrink:0}
+.footer-cta .note{font-size:12.5px;color:var(--ink-2);text-align:center;margin-bottom:8px}
+.bottomnav{display:flex;border-top:1px solid var(--line);background:#fff;padding:6px 4px calc(6px + env(safe-area-inset-bottom));flex-shrink:0}
+.bottomnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;color:var(--ink-3);padding:4px 0;text-align:center}
+.bottomnav button.on{color:var(--blue);font-weight:600}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:600;padding:2px 9px;border-radius:99px;white-space:nowrap}
+.b-blue{background:var(--blue-50);color:var(--blue)}.b-green{background:var(--green-50);color:var(--green)}.b-amber{background:var(--amber-50);color:var(--amber)}.b-red{background:var(--red-50);color:var(--red)}.b-gray{background:#EEF1F6;color:var(--ink-2)}.b-violet{background:var(--violet-50);color:var(--violet)}
+.chip{height:36px;padding:0 14px;border-radius:99px;border:1.5px solid var(--line);background:#fff;font-size:13.5px;white-space:nowrap;display:inline-flex;align-items:center;gap:6px}
+.chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.chips{display:flex;gap:8px;overflow-x:auto;margin:0 -16px;padding:2px 16px}
+.chips::-webkit-scrollbar{display:none}
+/* fields */
+.field{margin-bottom:16px}
+.field label{display:block;font-size:14px;font-weight:600;margin-bottom:6px}
+.field label i{color:var(--red);font-style:normal}
+.field input,.field select,.field textarea{width:100%;font:inherit;font-size:16px;border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff;color:var(--ink);outline:none;appearance:none;-webkit-appearance:none}
+.field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='%238A97AB' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:40px}
+.field textarea{resize:none;line-height:1.5}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px var(--blue-100)}
+.field.err input,.field.err textarea,.field.err select{border-color:var(--red);background:#FFFBFB}
+.errmsg{color:var(--red);font-size:12.5px;margin-top:5px;display:flex;align-items:center;gap:4px}
+.hint{font-size:12.5px;color:var(--ink-2);margin-top:5px}
+.ex{font-size:12.5px;color:var(--ink-2);background:var(--blue-50);border-radius:10px;padding:7px 10px;margin-top:6px}
+.ex b{color:var(--blue);font-weight:600;margin-right:4px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg button{border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;background:#fff}
+.seg button b{display:block;font-size:14px}
+.seg button small{color:var(--ink-2);font-size:12px}
+.seg button.on{border-color:var(--blue);background:var(--blue-50)}
+.seg button.on b{color:var(--blue)}
+/* login */
+.login-hero{text-align:center;padding:18px 0 8px}
+.emblem{width:68px;height:68px;border-radius:20px;background:linear-gradient(140deg,var(--blue),var(--navy));color:#fff;display:grid;place-items:center;margin:0 auto 14px;box-shadow:0 10px 24px rgba(31,91,216,.3)}
+.login-hero h1{font-size:23px;font-weight:700;line-height:1.3}
+.login-hero p{color:var(--ink-2);font-size:14px}
+.proto-tag{display:inline-block;margin-top:10px;font-size:12px;color:var(--amber);background:var(--amber-50);padding:3px 10px;border-radius:99px;font-weight:500}
+.lang{display:flex;justify-content:center;gap:8px;margin:14px 0 4px}
+.persona{display:flex;gap:12px;align-items:flex-start;width:100%;background:#fff;border:1.5px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}
+.persona.on{border-color:var(--blue);background:#F7FAFF;box-shadow:0 0 0 3px var(--blue-100)}
+.avatar{width:44px;height:44px;border-radius:50%;background:var(--blue-100);color:var(--blue);display:grid;place-items:center;font-weight:700;flex-shrink:0}
+.pi{flex:1;display:flex;flex-direction:column;gap:3px;align-items:flex-start}
+.pi small{color:var(--ink-2);font-size:12.5px;line-height:1.45}
+.radio{width:22px;height:22px;border-radius:50%;border:2px solid #C5CFDE;flex-shrink:0;margin-top:2px}
+.persona.on .radio{border:7px solid var(--blue)}
+/* home */
+.hero{background:linear-gradient(160deg,var(--navy) 0%,#163E99 100%);color:#fff;padding:14px 18px 70px;flex-shrink:0;position:relative}
+.hero-top{display:flex;justify-content:space-between;align-items:center}
+.hero-top small{opacity:.75;font-size:12.5px;display:block}
+.hero-top b{font-size:20px;font-weight:600}
+.hero .iconbtn{color:#fff;background:rgba(255,255,255,.12);position:relative}
+.dot{position:absolute;top:9px;right:10px;width:8px;height:8px;border-radius:50%;background:#FF6B6B;border:2px solid var(--navy)}
+.visa-card{margin:-58px 16px 0;position:relative;z-index:2;background:#fff;border-radius:20px;padding:16px;box-shadow:0 8px 24px rgba(11,42,111,.12)}
+.vc-top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.vc-label{font-size:12.5px;color:var(--ink-2)}
+.vc-type{font-weight:600;font-size:16px}
+.big{font-size:30px;font-weight:700;line-height:1.1;letter-spacing:-.5px}
+.big small{font-size:14px;font-weight:500;color:var(--ink-2);letter-spacing:0}
+.bar{height:8px;border-radius:99px;background:#E8EEF7;overflow:hidden;margin:12px 0 8px}
+.bar span{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),#4C86F0)}
+.bar.warn span{background:linear-gradient(90deg,#E59A1B,#F2B544)}
+.vc-meta{display:flex;justify-content:space-between;font-size:12.5px;color:var(--ink-2)}
+.alert{display:flex;gap:12px;border-radius:16px;padding:14px;align-items:flex-start}
+.alert.amber{background:var(--amber-50);border:1px solid #F5DFA8}
+.alert.red{background:var(--red-50);border:1px solid #F6C9C9}
+.alert.blue{background:var(--blue-50);border:1px solid var(--blue-100)}
+.alert.green{background:var(--green-50);border:1px solid #BFE6D4}
+.alert .ai{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex-shrink:0;background:#fff}
+.alert.amber .ai{color:var(--amber)}.alert.red .ai{color:var(--red)}.alert.blue .ai{color:var(--blue)}.alert.green .ai{color:var(--green)}
+.alert b{display:block;font-size:14.5px}
+.alert p{font-size:13px;color:var(--ink-2);margin-top:2px}
+.alert .btn-sm{margin-top:10px}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.tile{background:#fff;border:1px solid var(--line);border-radius:16px;padding:12px 8px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;font-size:12.5px;font-weight:500;line-height:1.3;position:relative}
+.tile .ti{width:42px;height:42px;border-radius:12px;display:grid;place-items:center}
+.tile .badge{position:absolute;top:6px;right:6px;font-size:10px;padding:1px 6px}
+.c-blue{background:var(--blue-50);color:var(--blue)}.c-green{background:var(--green-50);color:var(--green)}.c-amber{background:var(--amber-50);color:var(--amber)}.c-violet{background:var(--violet-50);color:var(--violet)}.c-red{background:var(--red-50);color:var(--red)}.c-navy{background:#E7ECF7;color:var(--navy)}
+.row{display:flex;align-items:center;gap:12px;padding:12px 0}
+.row+.row{border-top:1px solid var(--line)}
+.row .ri{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;flex-shrink:0}
+.row .rt{flex:1;min-width:0}
+.row .rt b{display:block;font-size:14.5px;font-weight:600}
+.row .rt small{display:block;color:var(--ink-2);font-size:12.5px}
+.svc{display:flex;gap:12px;align-items:center;width:100%;background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:10px}
+.svc .ri{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;flex-shrink:0}
+.svc .rt{flex:1;min-width:0}
+.svc .rt b{display:block;font-size:15px;font-weight:600;line-height:1.3}
+.svc .rt small{display:block;color:var(--ink-2);font-size:12.5px;margin-top:1px}
+.svc .meta{margin-top:6px}
+.svc.rec{border-color:#BBD0FA;box-shadow:0 0 0 3px #EEF4FF}
+.svc.dim{opacity:.45}
+.kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;font-size:14px}
+.kv+.kv{border-top:1px dashed var(--line)}
+.kv span{color:var(--ink-2);flex-shrink:0}
+.kv b{font-weight:500;text-align:right}
+.steps{counter-reset:s;list-style:none}
+.steps li{position:relative;padding:0 0 14px 40px;font-size:14px}
+.steps li:last-child{padding-bottom:0}
+.steps li::before{counter-increment:s;content:counter(s);position:absolute;left:0;top:0;width:26px;height:26px;border-radius:50%;background:#EEF1F6;color:var(--ink-2);display:grid;place-items:center;font-size:13px;font-weight:600}
+.steps li::after{content:'';position:absolute;left:12.5px;top:28px;bottom:2px;width:1.5px;background:var(--line)}
+.steps li:last-child::after{display:none}
+.steps li.done::before{content:'✓';background:var(--green);color:#fff}
+.steps li.now::before{background:var(--blue);color:#fff}
+.steps li.now{font-weight:600}
+.steps li small{display:block;font-weight:400;color:var(--ink-2);font-size:12.5px}
+.svc-head{display:flex;gap:14px;align-items:center}
+.svc-head .ri{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;flex-shrink:0}
+.svc-head h2{font-size:18px;line-height:1.3}
+.svc-head p{font-size:13px;color:var(--ink-2)}
+.progress-top{display:flex;gap:6px;margin-bottom:14px}
+.progress-top span{flex:1;height:4px;border-radius:9px;background:#DCE3EE}
+.progress-top span.on{background:var(--blue)}
+.ptext{font-size:12.5px;color:var(--ink-2);margin-bottom:6px}
+.msgbox{background:#F7F9FC;border:1px solid var(--line);border-radius:12px;padding:12px;font-size:13px;white-space:pre-line;line-height:1.55}
+.msgbox+.msgbox{margin-top:8px}
+.msgbox .lbl{font-size:11.5px;font-weight:600;color:var(--blue);display:block;margin-bottom:4px}
+.doc{display:flex;gap:12px;padding:14px 0;align-items:flex-start}
+.doc+.doc{border-top:1px solid var(--line)}
+.doc .st{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex-shrink:0}
+.doc .st.ok{background:var(--green);color:#fff}
+.doc .st.miss{background:var(--red-50);color:var(--red)}
+.doc .st.wait{background:var(--amber-50);color:var(--amber)}
+.doc .st.opt{background:#EEF1F6;color:var(--ink-3)}
+.doc .dt{flex:1;min-width:0}
+.doc .dt b{display:block;font-size:14.5px;font-weight:600;line-height:1.35}
+.doc .dt small{display:block;font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.doc .dt small.r{color:var(--red)}
+.doc .acts{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+.check{display:flex;gap:12px;align-items:flex-start;font-size:14px;cursor:pointer}
+.check .box{width:24px;height:24px;border-radius:7px;border:2px solid #C5CFDE;flex-shrink:0;display:grid;place-items:center;color:#fff;margin-top:1px}
+.check.on .box{background:var(--blue);border-color:var(--blue)}
+.ring{display:flex;align-items:center;gap:12px}
+.track{list-style:none;margin-top:12px}
+.track li{position:relative;padding:0 0 16px 34px;font-size:14px;color:var(--ink-3)}
+.track li::before{content:'';position:absolute;left:5px;top:5px;width:12px;height:12px;border-radius:50%;background:#fff;border:2.5px solid #CBD4E2}
+.track li::after{content:'';position:absolute;left:10.5px;top:20px;bottom:0;width:2px;background:#E1E7F0}
+.track li:last-child{padding-bottom:0}.track li:last-child::after{display:none}
+.track li.done{color:var(--ink)}.track li.done::before{background:var(--green);border-color:var(--green)}.track li.done::after{background:var(--green)}
+.track li.now{color:var(--ink);font-weight:600}.track li.now::before{border-color:var(--blue);box-shadow:0 0 0 4px var(--blue-100)}
+.track li small{display:block;font-weight:400;font-size:12px;color:var(--ink-3)}
+.tl{list-style:none}
+.tl li{display:flex;gap:12px;padding:12px 0;align-items:center}
+.tl li+li{border-top:1px solid var(--line)}
+.tl .dd{width:52px;text-align:center;flex-shrink:0;border-radius:12px;padding:6px 0;background:#F1F4F9}
+.tl .dd b{display:block;font-size:18px;line-height:1.1}
+.tl .dd small{font-size:11px;color:var(--ink-2)}
+.tl .tt{flex:1;min-width:0}
+.tl .tt b{display:block;font-size:14px;font-weight:600}
+.tl .tt small{font-size:12.5px;color:var(--ink-2)}
+.tl li.done{opacity:.55}
+.tl li.done .tt b{text-decoration:line-through}
+.toggle{width:46px;height:28px;border-radius:99px;background:#CBD4E2;position:relative;flex-shrink:0;transition:background .15s}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .15s}
+.toggle.on{background:var(--green)}.toggle.on::after{left:21px}
+.slots{display:flex;gap:8px;overflow-x:auto;margin:0 -16px 10px;padding:0 16px}
+.slots::-webkit-scrollbar{display:none}
+.slot{min-width:62px;border:1.5px solid var(--line);border-radius:12px;padding:8px 6px;text-align:center;background:#fff;font-size:12px;color:var(--ink-2)}
+.slot b{display:block;font-size:17px;color:var(--ink)}
+.slot.on{border-color:var(--blue);background:var(--blue-50)}
+.slot.on b{color:var(--blue)}
+.times{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px}
+.times button{height:38px;border-radius:10px;border:1.5px solid var(--line);background:#fff;font-size:13.5px;text-align:center}
+.times button.on{border-color:var(--blue);background:var(--blue-50);color:var(--blue);font-weight:600}
+.times button:disabled{opacity:.35;text-decoration:line-through}
+.acc{border-top:1px solid var(--line)}
+.acc:first-child{border-top:0}
+.acc summary{list-style:none;padding:12px 0;font-weight:600;font-size:14px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
+.acc summary::-webkit-details-marker{display:none}
+.acc[open] summary svg{transform:rotate(90deg)}
+.acc p{font-size:13.5px;color:var(--ink-2);padding-bottom:12px}
+.cmp{display:grid;gap:8px}
+.cmp div{border-radius:12px;padding:10px 12px;font-size:13px;color:var(--ink-2)}
+.cmp b{display:block;color:var(--ink);font-size:14px}
+.empty{text-align:center;padding:28px 16px}
+.empty .ei{width:64px;height:64px;border-radius:20px;margin:0 auto 12px;display:grid;place-items:center}
+/* overlays */
+#sheetwrap,#modalwrap{position:absolute;inset:0;z-index:50;display:none}
+#sheetwrap.show,#modalwrap.show{display:block}
+.scrim{position:absolute;inset:0;background:rgba(12,19,34,.45);animation:fade .2s}
+.sheet{position:absolute;left:0;right:0;bottom:0;height:88%;background:#fff;border-radius:24px 24px 0 0;display:flex;flex-direction:column;animation:up .25s cubic-bezier(.2,.8,.2,1)}
+.sheet-h{padding:10px 16px 0;flex-shrink:0}
+.grab{width:40px;height:5px;border-radius:9px;background:#D6DDE8;margin:0 auto 8px}
+.sheet-top{display:flex;justify-content:space-between;align-items:center}
+.sheet-top h3{font-size:18px}
+.tabs{display:flex;gap:4px;background:#F1F4F9;border-radius:12px;padding:4px;margin:10px 0 0}
+.tabs button{flex:1;height:36px;border-radius:9px;font-size:13.5px;text-align:center;color:var(--ink-2);font-weight:500}
+.tabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.08);font-weight:600}
+.sheet-b{flex:1;overflow-y:auto;padding:14px 16px}
+.sheet-f{padding:10px 12px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--line);display:flex;gap:8px;flex-shrink:0}
+.sheet-f input{flex:1;font:inherit;font-size:16px;border:1.5px solid var(--line);border-radius:99px;padding:0 16px;height:44px;outline:none}
+.sheet-f input:focus{border-color:var(--blue)}
+.send{width:44px;height:44px;border-radius:50%;background:var(--blue);color:#fff;display:grid;place-items:center;flex-shrink:0}
+.msg{max-width:86%;padding:10px 13px;border-radius:16px;font-size:14px;margin-bottom:8px;white-space:pre-line;line-height:1.5}
+.msg.bot{background:#F1F4F9;border-bottom-left-radius:5px}
+.msg.me{background:var(--blue);color:#fff;margin-left:auto;border-bottom-right-radius:5px}
+.msg.sys{background:var(--green-50);color:var(--green);font-size:13px;max-width:100%;text-align:center;border-radius:12px}
+.qchips{display:flex;flex-direction:column;gap:8px;margin:6px 0 12px;align-items:flex-start}
+.qchips button{border:1.5px solid var(--blue-100);color:var(--blue);background:#fff;border-radius:14px;padding:8px 12px;font-size:13.5px;text-align:left}
+.typing{display:inline-flex;gap:4px}.typing i{width:7px;height:7px;border-radius:50%;background:#A9B5C7;animation:b 1s infinite}.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+.modal{position:absolute;left:20px;right:20px;top:50%;transform:translateY(-50%);background:#fff;border-radius:24px;padding:26px 20px 20px;text-align:center;animation:pop .25s cubic-bezier(.2,.8,.2,1)}
+.modal .mi{width:72px;height:72px;border-radius:50%;background:var(--green-50);color:var(--green);display:grid;place-items:center;margin:0 auto 14px}
+.modal h3{font-size:20px;margin-bottom:6px}
+.modal p{font-size:14px;color:var(--ink-2)}
+.refno{background:#F4F7FC;border-radius:12px;padding:10px;margin:14px 0;font-size:13px;color:var(--ink-2)}
+.refno b{display:block;font-size:18px;color:var(--ink);letter-spacing:.5px}
+#toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);background:#0F172A;color:#fff;padding:11px 16px;border-radius:14px;font-size:13.5px;z-index:80;opacity:0;pointer-events:none;transition:all .25s;width:max-content;max-width:330px;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.fab{position:absolute;right:16px;bottom:84px;z-index:20;height:48px;padding:0 16px 0 12px;border-radius:99px;background:var(--navy);color:#fff;display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;box-shadow:0 8px 20px rgba(11,42,111,.35)}
+@keyframes up{from{transform:translateY(100%)}to{transform:none}}
+@keyframes fade{from{opacity:0}}
+@keyframes pop{from{opacity:0;transform:translateY(-46%) scale(.96)}}
+@keyframes b{0%,60%,100%{transform:none;opacity:.6}30%{transform:translateY(-4px);opacity:1}}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}
+.muted{color:var(--ink-2);font-size:13px}
+.flex{display:flex;align-items:center;gap:8px}
+.sp{flex:1}
+</style>
+</head>
+<body>
+<div class="device" id="device">
+  <div class="statusbar" id="sb"><span>9:41</span><span>●●●● 5G ▮</span></div>
+  <div id="screen"></div>
+  <div id="sheetwrap"></div>
+  <div id="modalwrap"></div>
+  <div id="toast"></div>
+</div>
+<script>
+/* ---------- icons ---------- */
+const IC={
+home:'<path d="M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/>',
+user:'<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>',
+grid:'<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+help:'<circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.6 2.6 0 1 1 3.6 2.4c-.7.3-1.1.9-1.1 1.7"/><path d="M12 17h.01"/>',
+back:'<path d="M15 18l-6-6 6-6"/>',
+chev:'<path d="M9 6l6 6-6 6"/>',
+doc:'<path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M8 13h8M8 17h5"/>',
+passport:'<rect x="5" y="3" width="14" height="18" rx="2"/><circle cx="12" cy="10" r="3"/><path d="M9 10h6M12 7c1 1 1 5 0 6M9 16.5h6"/>',
+refresh:'<path d="M20 11a8 8 0 1 0-2.3 5.7"/><path d="M20 4v7h-7"/>',
+cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>',
+house:'<path d="M3 11l9-7 9 7"/><path d="M5 10v10h14V10"/><path d="M10 20v-5h4v5"/>',
+plane:'<path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>',
+check:'<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+alert:'<circle cx="12" cy="12" r="9"/><path d="M12 7.5v5.5M12 16.5h.01"/>',
+bell:'<path d="M6 8a6 6 0 1 1 12 0c0 7 3 8 3 8H3s3-1 3-8"/><path d="M10 20a2 2 0 0 0 4 0"/>',
+wallet:'<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
+upload:'<path d="M12 16V4M7 9l5-5 5 5M4 20h16"/>',
+school:'<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>',
+chat:'<path d="M4 5h16v11H9l-5 4z"/>',
+copy:'<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>',
+book:'<path d="M12 7v14M3 5a1 1 0 0 1 1-1h5a3 3 0 0 1 3 3 3 3 0 0 1 3-3h5a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1h-6a2 2 0 0 0-2 2 2 2 0 0 0-2-2H4a1 1 0 0 1-1-1z"/>',
+globe:'<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>',
+people:'<circle cx="9" cy="8" r="3.5"/><path d="M2 20c0-3.5 3-5.5 7-5.5s7 2 7 5.5"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M22 20c0-3-2-5-4.5-5.4"/>',
+x:'<path d="M6 6l12 12M18 6 6 18"/>',
+send:'<path d="M4 12l16-8-6 16-2.5-6.5z"/>',
+spark:'<path d="M12 3l1.8 4.7 4.7 1.8-4.7 1.8L12 16l-1.8-4.7-4.7-1.8 4.7-1.8z"/><path d="M19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z"/>',
+shield:'<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-5"/>',
+edit:'<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
+play:'<path d="M7 5l12 7-12 7z"/>',
+pin:'<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>'
+};
+const ic=(n,s=22)=>`<svg class="i" width="${s}" height="${s}" viewBox="0 0 24 24">${IC[n]}</svg>`;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- dates (mock "today") ---------- */
+const TODAY=new Date('2026-11-04T00:00:00');
+const TH_M=['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.'];
+const EN_M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const D=iso=>new Date(iso+'T00:00:00');
+const fd=iso=>{if(!iso)return '-';const d=D(iso);return `${d.getDate()} ${TH_M[d.getMonth()]} ${d.getFullYear()+543}`};
+const fde=iso=>{const d=D(iso);return `${d.getDate()} ${EN_M[d.getMonth()]} ${d.getFullYear()}`};
+const days=iso=>Math.round((D(iso)-TODAY)/864e5);
+const iso8=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+const addDays=(iso,n)=>{const d=D(iso);d.setDate(d.getDate()+n);return iso8(d)};
+const inDays=n=>n===0?'วันนี้':n>0?`อีก ${n} วัน`:`เลยมา ${-n} วัน`;
+
+/* ---------- mock data ---------- */
+const PERSONAS={
+ edplus:{key:'edplus',name:'Lin Mei',initials:'LM',nat:'จีน',natEn:'Chinese',passport:'EJ4829175',visa:'Non-Immigrant ED Plus',group:'นักศึกษาปริญญาโท (เต็มเวลา)',uni:'มหาวิทยาลัยสยามเดโม',faculty:'คณะบริหารธุรกิจ',studentId:'6612345678',stayStart:'2025-12-03',expiry:'2026-12-02',report90:'2026-11-16',studyEnd:'2027-05-31',inThai:'2 ปี 4 เดือน',address:'99/12 ซอยพหลโยธิน 24 แขวงจอมพล เขตจตุจักร กรุงเทพฯ 10900',phone:'081-234-5678',email:'linmei@example.com',trip:null,
+  desc:'ED Plus · ปริญญาโท อยู่ไทย 2 ปีกว่า ต่อวีซ่าและรายงานตัว 90 วันเป็นประจำ',rec:['ext','report90'],wallet:['passport','photo','student_id','tm30_receipt','prev90']},
+ ed:{key:'ed',name:'Lukas Weber',initials:'LW',nat:'เยอรมนี',natEn:'German',passport:'C7KX92L41',visa:'Non-Immigrant ED',group:'นักศึกษาแลกเปลี่ยน 1 ปีการศึกษา',uni:'มหาวิทยาลัยสยามเดโม',faculty:'คณะวิศวกรรมศาสตร์',studentId:'6798765432',stayStart:'2026-09-20',expiry:'2027-03-31',report90:'2026-12-19',studyEnd:'2027-03-15',inThai:'1 เดือนครึ่ง',address:'หอพักนานาชาติ อาคาร C ห้อง 512 ต.คลองหนึ่ง อ.คลองหลวง จ.ปทุมธานี 12120',phone:'092-555-0147',email:'lukas.w@example.com',trip:{depart:'2026-12-18',ret:'2027-01-05',dest:'เยอรมนี'},
+  desc:'ED · นักศึกษาแลกเปลี่ยน เพิ่งมาไทย วางแผนกลับบ้านช่วงปีใหม่และต้องกลับเข้ามาเรียนต่อ',rec:['reentry','tdac'],wallet:['passport','student_id','tm30_receipt']}
+};
+const DOCS={
+ passport:{n:'หนังสือเดินทางและหน้าวีซ่าปัจจุบัน'},
+ photo:{n:'รูปถ่าย 4×6 ซม.',why:'ต้องถ่ายไม่เกิน 6 เดือน พื้นหลังสีขาว',act:'upload'},
+ univ_letter:{n:'หนังสือรับรองการเป็นนักศึกษา',why:'ต้องออกโดยมหาวิทยาลัยไม่เกิน 30 วันก่อนวันยื่น',act:'univ'},
+ student_id:{n:'สำเนาบัตรนักศึกษา',act:'upload'},
+ tm30_receipt:{n:'ใบรับแจ้งที่พัก (ตม.30) ล่าสุด',act:'upload',why:'ใช้ยืนยันที่อยู่ปัจจุบัน'},
+ prev90:{n:'ใบรับรายงานตัว 90 วันครั้งก่อน',act:'upload',opt:true,why:'ไม่ต้องใช้ หากเป็นการรายงานตัวครั้งแรก'},
+ tm7:{n:'แบบ ตม.7 คำขออยู่ต่อในราชอาณาจักร',auto:true},
+ tm47:{n:'แบบ ตม.47 แจ้งอยู่เกิน 90 วัน',auto:true},
+ tm8:{n:'แบบ ตม.8 คำขออนุญาตกลับเข้ามาอีก',auto:true},
+ ticket:{n:'ตั๋วเครื่องบิน / กำหนดการเดินทาง',why:'ต้องแสดงวันเดินทางออกและวันกลับ',act:'upload'},
+ lease:{n:'สัญญาเช่าที่พักใหม่',why:'ชื่อผู้เช่าต้องตรงกับหนังสือเดินทาง',act:'upload'},
+ owner_id:{n:'สำเนาบัตรประชาชนเจ้าของที่พัก',why:'เจ้าของที่พักเป็นผู้จัดเตรียม',act:'owner'},
+ accom:{n:'ที่อยู่ที่พักในประเทศไทย',auto:true,autoTxt:'ดึงจากข้อมูลส่วนตัว'}
+};
+const SV={
+ ext:{name:'ต่ออายุวีซ่านักศึกษา',short:'ต่อวีซ่า',sub:'ยื่นคำขออยู่ต่อ (ตม.7) ออนไลน์',ic:'refresh',c:'c-blue',fee:'1,900 บาท',
+  when:'เริ่มเตรียมเอกสารได้ 30 วันก่อนวีซ่าหมดอายุ และต้องยื่นก่อนวันหมดอายุ',
+  steps:['ตรวจสิทธิ์และวันหมดอายุ','กรอกแบบฟอร์ม ตม.7','ตรวจเอกสารให้ครบถ้วน','ยื่นคำขอและติดตามผล'],
+  docs:['passport','photo','univ_letter','student_id','tm30_receipt','tm7'],
+  track:['ส่งคำขอแล้ว','เจ้าหน้าที่ตรวจสอบเอกสาร','รอผลพิจารณา','อนุมัติแล้ว'],
+  fields:p=>[
+   {id:'reason',l:'เหตุผลในการขออยู่ต่อ',type:'select',req:1,opts:['ศึกษาต่อตามหลักสูตร','ทำวิทยานิพนธ์ / สอบจบ','ลงทะเบียนภาคเรียนถัดไป'],v:'ศึกษาต่อตามหลักสูตร'},
+   {id:'studyEnd',l:'วันสิ้นสุดหลักสูตร',type:'date',req:1,v:p.studyEnd,hint:'ดูได้จากหนังสือรับรองของมหาวิทยาลัย'},
+   {id:'address',l:'ที่อยู่ปัจจุบันในประเทศไทย',type:'textarea',req:1,v:p.address,hint:'ต้องตรงกับที่แจ้ง ตม.30 ครั้งล่าสุด'},
+   {id:'phone',l:'เบอร์โทรศัพท์ที่ติดต่อได้',type:'tel',req:1,v:p.phone,ex:'081-234-5678'}]},
+ report90:{name:'รายงานตัว 90 วัน',short:'รายงานตัว 90 วัน',sub:'ยืนยันที่อยู่ปัจจุบัน (ตม.47) ออนไลน์',ic:'cal',c:'c-green',fee:'ไม่มีค่าธรรมเนียม',
+  when:'ยื่นออนไลน์ได้ล่วงหน้า 15 วัน และหลังครบกำหนดไม่เกิน 7 วัน',
+  steps:['ตรวจวันครบกำหนด','ยืนยันที่อยู่ปัจจุบัน','ตรวจเอกสาร','ส่งรายงานและรับใบรับ'],
+  docs:['passport','prev90','tm47'],
+  track:['ส่งรายงานแล้ว','เจ้าหน้าที่ตรวจสอบ','ได้รับใบรับรายงานตัว'],
+  fields:p=>[
+   {id:'stay',l:'สถานะที่พัก',type:'select',req:1,opts:['ยังพักอยู่ที่เดิม','ย้ายที่พักแล้ว'],v:'ยังพักอยู่ที่เดิม',hint:'หากย้ายที่พักแล้ว ต้องแจ้ง ตม.30 ก่อนรายงานตัว'},
+   {id:'address',l:'ที่อยู่ปัจจุบัน',type:'textarea',req:1,v:p.address},
+   {id:'phone',l:'เบอร์โทรศัพท์',type:'tel',req:1,v:p.phone}]},
+ tm30:{name:'แจ้งที่พัก (ตม.30)',short:'แจ้งที่พัก ตม.30',sub:'สร้างข้อความสองภาษาส่งให้เจ้าของที่พัก',ic:'house',c:'c-amber',fee:'ไม่มีค่าธรรมเนียม',
+  when:'เจ้าของที่พักต้องแจ้งภายใน 24 ชั่วโมงหลังคุณย้ายเข้า',
+  steps:['กรอกข้อมูลที่พักใหม่','ส่งข้อความสองภาษาให้เจ้าของที่พัก','เจ้าของที่พักยืนยันการแจ้ง','รับใบรับแจ้งเข้า Wallet'],
+  docs:['passport','lease','owner_id'],
+  track:['ส่งข้อความถึงเจ้าของที่พักแล้ว','เจ้าของที่พักยืนยันแล้ว','ตม. รับแจ้งเรียบร้อย'],
+  fields:p=>[
+   {id:'newAddress',l:'ที่อยู่ที่พักใหม่',type:'textarea',req:1,v:'',ph:'บ้านเลขที่ อาคาร/ห้อง ถนน แขวง/ตำบล เขต/อำเภอ จังหวัด',ex:'88/5 คอนโดตัวอย่าง ห้อง 1204 ถ.รัชดาภิเษก ห้วยขวาง กรุงเทพฯ 10310'},
+   {id:'moveIn',l:'วันที่ย้ายเข้า',type:'date',req:1,v:iso8(TODAY)},
+   {id:'ownerName',l:'ชื่อเจ้าของที่พัก / ผู้จัดการอาคาร',type:'text',req:1,v:'',ex:'สมชาย ใจดี'},
+   {id:'ownerPhone',l:'เบอร์โทรเจ้าของที่พัก',type:'tel',req:1,v:'',ex:'089-000-1122'}]},
+ reentry:{name:'ขออนุญาตกลับเข้าประเทศ (Re-entry)',short:'Re-entry Permit',sub:'ต้องได้รับก่อนเดินทางออกนอกประเทศ',ic:'plane',c:'c-violet',
+  when:'ต้องได้รับอนุญาตก่อนเดินทางออก ไม่เช่นนั้นวีซ่าเดิมจะสิ้นสุดทันทีเมื่อออกจากไทย',
+  steps:['เลือกประเภทและวันเดินทาง','กรอกแบบ ตม.8','ตรวจเอกสาร','ยื่นคำขอและรับใบอนุญาต'],
+  docs:['passport','photo','ticket','tm8'],
+  track:['ส่งคำขอแล้ว','เจ้าหน้าที่ตรวจสอบ','อนุมัติแล้ว'],
+  fields:p=>[
+   {id:'type',l:'ประเภทการขอ',type:'chips',req:1,v:'single',opts:[{v:'single',l:'ครั้งเดียว',s:'1,000 บาท'},{v:'multiple',l:'หลายครั้ง',s:'3,800 บาท'}]},
+   {id:'depart',l:'วันเดินทางออก',type:'date',req:1,v:p.trip?p.trip.depart:''},
+   {id:'ret',l:'วันเดินทางกลับ',type:'date',req:1,v:p.trip?p.trip.ret:''},
+   {id:'dest',l:'ประเทศปลายทาง',type:'text',req:1,v:p.trip?p.trip.dest:'',ex:'ญี่ปุ่น'}]},
+ tdac:{name:'TDAC บัตรขาเข้าดิจิทัล',short:'TDAC',sub:'กรอกข้อมูลก่อนเดินทางเข้าไทย',ic:'globe',c:'c-navy',fee:'ไม่มีค่าธรรมเนียม',
+  when:'กรอกได้ภายใน 3 วันก่อนเดินทางถึงประเทศไทย',
+  steps:['กรอกข้อมูลเที่ยวบิน','ยืนยันที่พักในไทย','ตรวจข้อมูล','รับ QR สำหรับด่าน ตม.'],
+  docs:['passport','ticket','accom'],
+  track:['ส่งข้อมูลแล้ว','ระบบตรวจสอบ','ได้รับ QR TDAC แล้ว'],
+  fields:p=>[
+   {id:'arrive',l:'วันที่เดินทางถึงไทย',type:'date',req:1,v:p.trip?p.trip.ret:''},
+   {id:'flight',l:'เที่ยวบินขาเข้า',type:'text',req:1,v:'',ex:'TG921'},
+   {id:'from',l:'เดินทางมาจากประเทศ',type:'text',req:1,v:p.trip?p.trip.dest:''},
+   {id:'address',l:'ที่พักในประเทศไทย',type:'textarea',req:1,v:p.address}]}
+};
+const EVENTS=[
+ {id:'all',l:'ทั้งหมด',svc:null},
+ {id:'expire',l:'วีซ่าใกล้หมดอายุ',svc:['ext']},
+ {id:'r90',l:'ครบกำหนด 90 วัน',svc:['report90']},
+ {id:'move',l:'ย้ายที่พักใหม่',svc:['tm30','report90']},
+ {id:'travel',l:'จะเดินทางออกนอกประเทศ',svc:['reentry','tdac']},
+ {id:'arrive',l:'กำลังเดินทางเข้าไทย',svc:['tdac','tm30']}
+];
+
+/* ---------- state ---------- */
+const S={screen:'login',hist:[],p:null,loginPick:'edplus',confirmed:false,svc:null,form:{},errors:{},docs:{},agree:false,requests:[],event:'all',rem:{d30:true,d7:true,d1:true},appt:null,apDate:null,apTime:null,help:{open:false,tab:'ai',chat:[],typing:false}};
+
+/* ---------- navigation ---------- */
+function go(s){S.hist.push(S.screen);S.screen=s;render(true)}
+function back(){if(S.hist.length){S.screen=S.hist.pop();render(true)}}
+function tab(s){if(s==='help'){openHelp();return}S.hist=s==='home'?[]:['home'];S.screen=s;render(true)}
+function render(top){
+ const box=document.getElementById('screen');const old=box.querySelector('.content');const st=(!top&&old)?old.scrollTop:0;
+ box.innerHTML=SCREENS[S.screen]();
+ const n=box.querySelector('.content');if(n)n.scrollTop=st;
+ document.getElementById('sb').className='statusbar'+(S.screen==='home'?' dark':'');
+}
+let tt;function toast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),2400)}
+
+/* ---------- shared UI ---------- */
+function appbar(title,o={}){
+ const b=o.back!==false&&S.hist.length;
+ return `<header class="appbar">${b?`<button class="iconbtn" onclick="back()" aria-label="ย้อนกลับ">${ic('back',24)}</button>`:'<span style="width:6px"></span>'}
+ <div class="ab-title">${title}${o.sub?`<small>${o.sub}</small>`:''}</div>
+ ${o.help!==false?`<button class="iconbtn" onclick="openHelp()" aria-label="ช่วยเหลือ">${ic('help')}</button>`:''}</header>`}
+function nav(a){
+ const it=[['home','home','หน้าหลัก'],['profile','user','บริการของฉัน'],['select','grid','บริการ'],['track','clock','สถานะ'],['help','help','ช่วยเหลือ']];
+ return `<nav class="bottomnav">${it.map(([k,i,l])=>`<button class="${a===k?'on':''}" onclick="tab('${k}')">${ic(i,23)}<span>${l}</span></button>`).join('')}</nav>`}
+
+/* ---------- logic ---------- */
+function elig(id){
+ const p=S.p;
+ if(id==='ext'){const d=days(p.expiry);
+  if(d<0)return{ok:false,t:'วีซ่าหมดอายุแล้ว',m:'ไม่สามารถยื่นออนไลน์ได้ กรุณาติดต่อสำนักงานตรวจคนเข้าเมืองโดยเร็ว'};
+  if(d>30)return{ok:false,soon:true,t:'ยังไม่ถึงช่วงยื่นคำขอ',m:`วีซ่าของคุณหมดอายุ ${fd(p.expiry)} ยื่นต่ออายุได้ตั้งแต่ ${fd(addDays(p.expiry,-30))} เป็นต้นไป`};
+  return{ok:true,t:'คุณมีสิทธิ์ยื่นต่ออายุออนไลน์',m:`ตรวจสอบจากฐานข้อมูล ตม. (จำลอง) · วีซ่าเหลือ ${days(p.expiry)} วัน`}}
+ if(id==='report90'){const d=days(p.report90);
+  if(d>15)return{ok:false,soon:true,t:'ยังไม่ถึงช่วงรายงานตัว',m:`ครบกำหนด ${fd(p.report90)} รายงานตัวออนไลน์ได้ตั้งแต่ ${fd(addDays(p.report90,-15))}`+(p.trip&&p.trip.depart<p.report90?`\n\nคุณจะเดินทางออกนอกประเทศ ${fd(p.trip.depart)} ก่อนครบกำหนด การนับ 90 วันจะเริ่มใหม่เมื่อกลับเข้าไทย จึงอาจไม่ต้องรายงานตัวรอบนี้`:'')};
+  if(d<-7)return{ok:false,t:'เกินช่วงรายงานตัวออนไลน์',m:'กรุณาติดต่อสำนักงานตรวจคนเข้าเมืองด้วยตนเอง'};
+  return{ok:true,t:'อยู่ในช่วงรายงานตัวออนไลน์',m:`ครบกำหนด ${fd(p.report90)} (${inDays(d)})`}}
+ return{ok:true};
+}
+const reqOf=id=>S.requests.find(r=>r.svc===id&&!r.done);
+const doneOf=id=>S.requests.find(r=>r.svc===id&&r.done);
+function svcStatus(id){
+ const r=reqOf(id);if(r)return`<span class="badge b-blue">กำลังดำเนินการ</span>`;
+ const p=S.p;
+ if(id==='ext'){const d=days(p.expiry);return d<=30?`<span class="badge b-red">วีซ่าเหลือ ${d} วัน</span>`:`<span class="badge b-gray">ยื่นได้ ${fd(addDays(p.expiry,-30))}</span>`}
+ if(id==='report90'){const d=days(p.report90);return d<=15?`<span class="badge b-amber">ครบกำหนด${inDays(d)}</span>`:`<span class="badge b-gray">ครบกำหนด ${fd(p.report90)}</span>`}
+ if(id==='reentry'){if(p.reentryOK)return`<span class="badge b-green">อนุมัติแล้ว</span>`;return p.trip?`<span class="badge b-amber">ก่อนเดินทาง ${fd(p.trip.depart)}</span>`:`<span class="badge b-gray">ใช้เมื่อจะเดินทางออก</span>`}
+ if(id==='tdac'){if(p.tdacOK)return`<span class="badge b-green">ได้รับ QR แล้ว</span>`;return p.trip?`<span class="badge b-gray">กรอกได้ ${fd(addDays(p.trip.ret,-3))}</span>`:`<span class="badge b-gray">ใช้ก่อนเดินทางเข้าไทย</span>`}
+ if(id==='tm30')return`<span class="badge b-gray">ใช้เมื่อย้ายที่พัก</span>`;
+ return'';
+}
+function timeline(){
+ const p=S.p,t=[];
+ t.push({d:addDays(p.expiry,-30),t:'เริ่มเตรียมเอกสารต่อวีซ่า',s:'ขอหนังสือรับรองจากมหาวิทยาลัยล่วงหน้า',svc:'ext'});
+ t.push({d:p.report90,t:'ครบกำหนดรายงานตัว 90 วัน',s:'ยื่นออนไลน์ได้ล่วงหน้า 15 วัน',svc:'report90',done:p.trip&&p.trip.depart<p.report90?false:undefined});
+ t.push({d:p.expiry,t:'วีซ่าหมดอายุ',s:p.visa,svc:'ext'});
+ if(p.trip){
+  t.push({d:addDays(p.trip.depart,-1),t:'ขอ Re-entry ให้เรียบร้อย',s:'ก่อนเดินทางออกนอกประเทศ',svc:'reentry',done:!!p.reentryOK});
+  t.push({d:p.trip.depart,t:`เดินทางออก → ${p.trip.dest}`,s:'แสดงใบ Re-entry ที่ด่าน ตม.'});
+  t.push({d:addDays(p.trip.ret,-3),t:'กรอก TDAC ก่อนกลับไทย',s:'กรอกได้ภายใน 3 วันก่อนถึงไทย',svc:'tdac',done:!!p.tdacOK});
+  t.push({d:p.trip.ret,t:'เดินทางกลับถึงไทย',s:'การนับรายงานตัว 90 วันเริ่มใหม่'});
+ }
+ t.push({d:p.studyEnd,t:'สิ้นสุดหลักสูตร',s:p.uni});
+ return t.filter(x=>days(x.d)>=-1).sort((a,b)=>a.d<b.d?-1:1);
+}
+function topAction(){
+ const p=S.p;
+ for(const id of p.rec){if(reqOf(id)||doneOf(id))continue;const e=elig(id);
+  if(id==='ext'&&e.ok)return{c:'red',i:'alert',t:`วีซ่าจะหมดอายุในอีก ${days(p.expiry)} วัน`,m:'เริ่มต่ออายุตอนนี้ ระบบจะเตรียมรายการเอกสารเฉพาะของคุณ',b:'เริ่มต่ออายุวีซ่า',svc:id};
+  if(id==='report90'&&e.ok)return{c:'amber',i:'cal',t:`รายงานตัว 90 วัน ${inDays(days(p.report90))}`,m:`ครบกำหนด ${fd(p.report90)} ยื่นออนไลน์ได้แล้ว`,b:'รายงานตัวตอนนี้',svc:id};
+  if(id==='reentry'&&p.trip)return{c:'amber',i:'plane',t:`จะเดินทางออก ${fd(p.trip.depart)} ใช่ไหม?`,m:'ต้องขอ Re-entry ก่อนออกนอกประเทศ ไม่เช่นนั้นวีซ่าจะสิ้นสุดทันที',b:'ขอ Re-entry',svc:id};
+  if(id==='tdac'&&p.trip)return{c:'blue',i:'globe',t:'เตรียม TDAC สำหรับขากลับ',m:`กรอกได้ตั้งแต่ ${fd(addDays(p.trip.ret,-3))} ระบบจะแจ้งเตือนเมื่อถึงเวลา`,b:'ดูรายละเอียด',svc:id};
+ }
+ return{c:'green',i:'shield',t:'ทุกอย่างเรียบร้อย',m:'ยังไม่มีงานเร่งด่วน ระบบจะแจ้งเตือนเมื่อใกล้ถึงกำหนด',b:null};
+}
+
+/* ---------- actions ---------- */
+function doLogin(){
+ const pass=(S.loginPass??PERSONAS[S.loginPick].passport).trim(),otp=(S.loginOtp??'123456').trim();
+ if(!pass){toast('กรุณากรอกเลขหนังสือเดินทาง');return}
+ if(!/^\d{6}$/.test(otp)){toast('รหัส OTP ต้องเป็นตัวเลข 6 หลัก');return}
+ S.p=JSON.parse(JSON.stringify(PERSONAS[S.loginPick]));S.p.uploads={};S.confirmed=false;S.requests=[];S.appt=null;S.help.chat=[];S.event='all';
+ go('profile');toast('เข้าสู่ระบบสำเร็จ (จำลอง)');
+}
+function logout(){S.p=null;S.hist=[];S.screen='login';S.loginPass=null;render(true)}
+function confirmProfile(){
+ const a=document.getElementById('p_addr'),ph=document.getElementById('p_phone');
+ if(a&&!a.value.trim()){toast('กรุณากรอกที่อยู่');return}
+ if(ph&&!ph.value.trim()){toast('กรุณากรอกเบอร์โทรศัพท์');return}
+ if(!S.confirmed){S.confirmed=true;S.hist=[];S.screen='home';render(true);toast('ยืนยันข้อมูลเรียบร้อย')}else{toast('บันทึกข้อมูลแล้ว');render()}
+}
+function openSvc(id){
+ if(S.svc!==id||!S.form._init){S.svc=id;S.form={_init:1};SV[id].fields(S.p).forEach(f=>S.form[f.id]=f.v);S.errors={};S.agree=false;
+  S.docs={};SV[id].docs.forEach(k=>{const d=DOCS[k];S.docs[k]=d.auto?'auto':(S.p.wallet.includes(k)?'wallet':(S.p.uploads[k]?'upload':(d.opt?'opt':'miss')))});}
+ go('form');
+}
+function setF(id,v){S.form[id]=v;if(S.errors[id]){delete S.errors[id];const w=document.getElementById('w_'+id);if(w){w.classList.remove('err');w.querySelector('.errmsg')?.remove()}}if(S.svc==='tm30')updMsg()}
+function toChecklist(){
+ const fs=SV[S.svc].fields(S.p);S.errors={};
+ fs.forEach(f=>{if(f.req&&!String(S.form[f.id]??'').trim())S.errors[f.id]='กรุณากรอกข้อมูลนี้'});
+ if(S.svc==='reentry'&&S.form.depart&&S.form.ret&&S.form.ret<=S.form.depart)S.errors.ret='วันเดินทางกลับต้องอยู่หลังวันเดินทางออก';
+ if(S.svc==='reentry'&&S.form.depart&&S.form.depart<iso8(TODAY))S.errors.depart='วันเดินทางออกต้องไม่ใช่วันที่ผ่านมาแล้ว';
+ if(S.svc==='report90'&&S.form.stay==='ย้ายที่พักแล้ว'){S.errors.stay='กรุณาแจ้งที่พัก (ตม.30) ให้เรียบร้อยก่อนรายงานตัว'}
+ const k=Object.keys(S.errors);
+ if(k.length){render();toast(`กรุณาตรวจสอบข้อมูล ${k.length} รายการ`);const el=document.getElementById('w_'+k[0]);el&&el.scrollIntoView({behavior:'smooth',block:'center'});return}
+ go('check');
+}
+function docAct(k,a){
+ if(a==='upload'){S.docs[k]='upload';S.p.uploads[k]=true;if(!S.p.wallet.includes(k))S.p.wallet.push(k);toast('อัปโหลดเอกสารแล้ว (จำลอง) · บันทึกใน Wallet');render()}
+ if(a==='univ'){S.docs[k]='wait';render();toast('ส่งคำขอถึงงานทะเบียนมหาวิทยาลัยแล้ว');
+  setTimeout(()=>{S.docs[k]='univ';S.p.uploads[k]=true;if(!S.p.wallet.includes(k))S.p.wallet.push(k);if(S.screen==='check')render();toast('มหาวิทยาลัยส่งหนังสือรับรองให้แล้ว')},2200)}
+ if(a==='owner'){S.docs[k]='wait';render();toast('ส่งคำขอเอกสารถึงเจ้าของที่พักแล้ว');
+  setTimeout(()=>{S.docs[k]='owner';if(S.screen==='check')render();toast('เจ้าของที่พักส่งเอกสารแล้ว')},2200)}
+}
+const docReady=v=>['auto','wallet','upload','univ','owner','opt'].includes(v);
+function submit(){
+ const sv=SV[S.svc];const id='TR-'+(S.svc.slice(0,3).toUpperCase())+'-69'+String(Math.floor(Math.random()*90000)+10000);
+ S.requests.unshift({id,svc:S.svc,step:1,steps:sv.track,date:iso8(TODAY),done:false,form:{...S.form}});
+ S.form={};S.modal={id,svc:S.svc};showModal();
+}
+function advance(rid){
+ const r=S.requests.find(x=>x.id===rid);if(!r||r.done)return;
+ r.step++;if(r.step>=r.steps.length){r.done=true;applyDone(r)}else toast(`อัปเดตสถานะ: ${r.steps[r.step-1]}`);render();
+}
+function applyDone(r){
+ const p=S.p;let m='';
+ if(r.svc==='ext'){p.stayStart=p.expiry;p.expiry=addDays(p.expiry,365);m=`วีซ่าขยายถึง ${fd(p.expiry)} แล้ว`}
+ if(r.svc==='report90'){p.report90=addDays(p.report90,90);m=`รายงานตัวครั้งถัดไป ${fd(p.report90)}`}
+ if(r.svc==='reentry'){p.reentryOK=true;m='ได้รับ Re-entry Permit แล้ว'}
+ if(r.svc==='tdac'){p.tdacOK=true;m='ได้รับ QR TDAC แล้ว'}
+ if(r.svc==='tm30'){p.address=r.form.newAddress;m='อัปเดตที่อยู่ใหม่ในโปรไฟล์แล้ว'}
+ r.result=m;toast('เสร็จสิ้น · '+m+' อัปเดตในแอปทันที');
+}
+function book(){if(!S.apDate||!S.apTime){toast('กรุณาเลือกวันและเวลา');return}S.appt={d:S.apDate,t:S.apTime};render();toast('จองนัดหมายเรียบร้อย')}
+function copyMsg(){const m=tm30Msg();const txt=m.th+'\n\n'+m.en;try{navigator.clipboard&&navigator.clipboard.writeText(txt)}catch(e){}toast('คัดลอกข้อความสองภาษาแล้ว')}
+
+/* ---------- screens ---------- */
+const SCREENS={};
+
+/* 1/2 · Login */
+SCREENS.login=()=>{
+ const sel=S.loginPick;
+ return `<div class="content">
+ <div class="login-hero"><div class="emblem">${ic('passport',34)}</div><h1>บริการนักศึกษาต่างชาติ</h1><p>วีซ่าและการพำนักในประเทศไทย ครบในที่เดียว</p><span class="proto-tag">ต้นแบบฟีเจอร์ในแอปทางรัฐ · ใช้ข้อมูลจำลอง</span></div>
+ <div class="lang">${['ไทย','English','中文'].map((l,i)=>`<button class="chip ${i?'':'on'}" onclick="toast('ต้นแบบนี้แสดงผลภาษาไทย')">${l}</button>`).join('')}</div>
+ <div class="sec-title">เลือกผู้ใช้ตัวอย่างเพื่อทดลอง</div>
+ ${['edplus','ed'].map(k=>{const p=PERSONAS[k];return `<button class="persona ${sel===k?'on':''}" onclick="S.loginPick='${k}';S.loginPass=null;render()"><span class="avatar">${p.initials}</span><span class="pi"><b>${p.name}</b><span class="badge ${k==='edplus'?'b-blue':'b-violet'}">${p.visa}</span><small>${p.desc}</small></span><span class="radio"></span></button>`}).join('')}
+ <div class="card mt12">
+  <div class="field"><label>เลขหนังสือเดินทาง</label><input value="${esc(S.loginPass??PERSONAS[sel].passport)}" oninput="S.loginPass=this.value" autocomplete="off"></div>
+  <div class="field" style="margin-bottom:0"><label>รหัส OTP (จำลอง)</label><input inputmode="numeric" maxlength="6" value="${esc(S.loginOtp??'123456')}" oninput="S.loginOtp=this.value"><div class="hint">ระบบจำลองส่งรหัสไปยังอีเมลที่ลงทะเบียน · ใช้ 123456</div></div>
+ </div></div>
+ <div class="footer-cta"><button class="btn btn-primary" onclick="doLogin()">เข้าสู่ระบบ</button></div>`};
+
+/* 2 · Profile / User information */
+SCREENS.profile=()=>{
+ const p=S.p,first=!S.confirmed;
+ const w=p.wallet.map(k=>DOCS[k]).filter(Boolean);
+ return `${appbar(first?'ตรวจสอบข้อมูลของคุณ':'บริการของฉัน',{sub:first?'ขั้นตอนที่ 1 จาก 1 ก่อนเริ่มใช้งาน':'ข้อมูลส่วนตัว · Document Wallet',back:first})}
+ <div class="content">
+ ${first?`<div class="alert blue">${`<div class="ai">${ic('shield')}</div>`}<div><b>ระบบดึงข้อมูลจาก ตม. ให้แล้ว</b><p>ตรวจสอบว่าถูกต้อง แก้ไขที่อยู่และเบอร์โทรได้ ข้อมูลนี้จะใช้กรอกแบบฟอร์มให้อัตโนมัติ</p></div></div>`:''}
+ <div class="card mt12"><div class="flex"><span class="avatar">${p.initials}</span><div class="sp"><b style="font-size:16px">${p.name}</b><div class="muted">สัญชาติ${p.nat} · ${p.group}</div></div></div></div>
+ <div class="sec-title">ข้อมูลส่วนตัว</div>
+ <div class="card"><div class="kv"><span>เลขหนังสือเดินทาง</span><b>${p.passport}</b></div><div class="kv"><span>มหาวิทยาลัย</span><b>${p.uni}</b></div><div class="kv"><span>คณะ</span><b>${p.faculty}</b></div><div class="kv"><span>รหัสนักศึกษา</span><b>${p.studentId}</b></div></div>
+ <div class="sec-title">ข้อมูลวีซ่าและการพำนัก</div>
+ <div class="card"><div class="kv"><span>ประเภทวีซ่า</span><b>${p.visa}</b></div><div class="kv"><span>อนุญาตให้อยู่ถึง</span><b>${fd(p.expiry)}</b></div><div class="kv"><span>รายงานตัว 90 วันถัดไป</span><b>${fd(p.report90)}</b></div><div class="kv"><span>ระยะเวลาที่อยู่ไทย</span><b>${p.inThai}</b></div></div>
+ <div class="sec-title">ข้อมูลติดต่อ <span class="badge b-blue">${ic('edit',12)} แก้ไขได้</span></div>
+ <div class="card">
+  <div class="field"><label>ที่อยู่ปัจจุบัน</label><textarea id="p_addr" rows="3" oninput="S.p.address=this.value">${esc(p.address)}</textarea></div>
+  <div class="field"><label>เบอร์โทรศัพท์</label><input id="p_phone" type="tel" value="${esc(p.phone)}" oninput="S.p.phone=this.value"></div>
+  <div class="field" style="margin-bottom:0"><label>อีเมล</label><input type="email" value="${esc(p.email)}" oninput="S.p.email=this.value"></div>
+ </div>
+ <div class="sec-title">กระเป๋าเอกสารดิจิทัล <span class="badge b-green">${w.length} รายการ</span></div>
+ <div class="card" style="padding:4px 16px">${w.map(d=>`<div class="row"><div class="ri c-blue">${ic('doc',20)}</div><div class="rt"><b>${d.n}</b><small>ตรวจสอบแล้ว · พร้อมใช้งาน</small></div><span style="color:var(--green)">${ic('check',20)}</span></div>`).join('')}
+  <div class="row"><button class="btn btn-ghost btn-sm" style="width:100%" onclick="toast('เลือกไฟล์จากเครื่อง (จำลอง)')">${ic('upload',18)} เพิ่มเอกสาร</button></div></div>
+ ${first?'':`<button class="btn btn-line mt16" onclick="logout()">เปลี่ยนผู้ใช้ตัวอย่าง / ออกจากระบบ</button>`}
+ </div>
+ <div class="footer-cta"><button class="btn btn-primary" onclick="confirmProfile()">${first?'ยืนยันข้อมูลถูกต้อง':'บันทึกการแก้ไข'}</button></div>
+ ${first?'':nav('profile')}`};
+
+/* 1 · Home */
+SCREENS.home=()=>{
+ const p=S.p,d=days(p.expiry),total=Math.max(1,Math.round((D(p.expiry)-D(p.stayStart))/864e5)),pct=Math.min(100,Math.max(4,Math.round((1-d/total)*100)));
+ const a=topAction(),act=S.requests.filter(r=>!r.done);
+ const quick=['ext','report90','tm30','reentry','tdac'];
+ return `<div class="content" style="padding:0">
+ <div class="hero"><div class="hero-top"><div><small>บริการนักศึกษาต่างชาติ</small><b>สวัสดี, ${p.name}</b></div><button class="iconbtn" onclick="tab('track')" aria-label="การแจ้งเตือน">${ic('bell')}<span class="dot"></span></button></div></div>
+ <div class="visa-card"><div class="vc-top"><div><div class="vc-label">วีซ่าปัจจุบัน</div><div class="vc-type">${p.visa}</div></div><span class="badge ${d<=30?'b-red':'b-green'}">${d<=30?'ใกล้หมดอายุ':'ปกติ'}</span></div>
+  <div class="mt12 big">${d} <small>วันที่เหลือ</small></div>
+  <div class="bar ${d<=30?'warn':''}"><span style="width:${pct}%"></span></div>
+  <div class="vc-meta"><span>หมดอายุ ${fd(p.expiry)}</span><span>90 วันถัดไป ${fd(p.report90)}</span></div></div>
+ <div style="padding:16px">
+ <div class="alert ${a.c}"><div class="ai">${ic(a.i)}</div><div class="sp"><b>${a.t}</b><p>${a.m}</p>${a.b?`<button class="btn btn-primary btn-sm" onclick="openSvc('${a.svc}')">${a.b} ${ic('chev',16)}</button>`:''}</div></div>
+ <div class="sec-title">บริการ <a onclick="tab('select')">ดูทั้งหมด</a></div>
+ <div class="grid">${quick.map(id=>{const s=SV[id];const r=p.rec.includes(id)&&!doneOf(id);return `<button class="tile" onclick="openSvc('${id}')">${r?'<span class="badge b-red">แนะนำ</span>':''}<span class="ti ${s.c}">${ic(s.ic)}</span>${s.short}</button>`}).join('')}
+  <button class="tile" onclick="tab('select')"><span class="ti c-navy">${ic('grid')}</span>เลือกตามสถานการณ์</button></div>
+ ${act.length?`<div class="sec-title">คำขอที่กำลังดำเนินการ <a onclick="tab('track')">ติดตาม</a></div>${act.map(r=>`<button class="svc" onclick="tab('track')"><span class="ri ${SV[r.svc].c}">${ic(SV[r.svc].ic)}</span><span class="rt"><b>${SV[r.svc].name}</b><small>${r.steps[r.step-1]} · ${r.id}</small></span>${ic('chev',18)}</button>`).join('')}`:''}
+ <div class="sec-title">กำหนดการถัดไป <a onclick="tab('track')">ไทม์ไลน์</a></div>
+ <div class="card" style="padding:2px 14px"><ul class="tl">${timeline().slice(0,3).map(tlItem).join('')}</ul></div>
+ <div class="sec-title">รู้หรือไม่?</div>
+ <button class="card" style="width:100%;display:flex;gap:12px;align-items:center" onclick="openHelp('ai','diff')"><span class="ri c-violet" style="width:42px;height:42px;border-radius:12px;display:grid;place-items:center">${ic('spark')}</span><span class="sp"><b style="font-size:14.5px;display:block">รายงานตัว 90 วัน ต่อวีซ่า และ Re-entry ต่างกันอย่างไร?</b><span class="muted">ถามผู้ช่วย AI ได้หลายภาษา</span></span>${ic('chev',18)}</button>
+ </div></div>${nav('home')}`};
+function tlItem(x){const d=D(x.d),n=days(x.d);const u=n<=7?'b-red':n<=30?'b-amber':'b-gray';
+ return `<li class="${x.done?'done':''}"><div class="dd"><b>${d.getDate()}</b><small>${TH_M[d.getMonth()]}</small></div><div class="tt"><b>${x.t}</b><small>${x.s||''}</small></div>${x.done?`<span class="badge b-green">เสร็จแล้ว</span>`:`<span class="badge ${u}">${inDays(n)}</span>`}</li>`}
+
+/* 3 · Select service */
+SCREENS.select=()=>{
+ const p=S.p,ev=EVENTS.find(e=>e.id===S.event),ids=Object.keys(SV);
+ const show=ev.svc?ids.filter(i=>ev.svc.includes(i)):ids;
+ const rec=p.rec.filter(i=>show.includes(i)&&!doneOf(i));
+ const rest=show.filter(i=>!rec.includes(i));
+ const card=(id,isRec)=>{const s=SV[id];return `<button class="svc ${isRec?'rec':''}" onclick="openSvc('${id}')"><span class="ri ${s.c}">${ic(s.ic,24)}</span><span class="rt"><b>${s.name}</b><small>${s.sub}</small><div class="meta">${isRec?'<span class="badge b-blue">แนะนำสำหรับคุณ</span> ':''}${svcStatus(id)}</div></span>${ic('chev',18)}</button>`};
+ return `${appbar('เลือกบริการ',{sub:'บริการวีซ่าและการพำนัก'})}
+ <div class="content">
+ <div class="ptext">คุณกำลังเจอสถานการณ์ไหน?</div>
+ <div class="chips">${EVENTS.map(e=>`<button class="chip ${S.event===e.id?'on':''}" onclick="S.event='${e.id}';render()">${e.l}</button>`).join('')}</div>
+ ${rec.length?`<div class="sec-title">แนะนำสำหรับ ${p.visa.replace('Non-Immigrant ','')}</div>${rec.map(i=>card(i,true)).join('')}`:''}
+ ${rest.length?`<div class="sec-title">${S.event==='all'?'บริการทั้งหมด':'บริการที่เกี่ยวข้อง'}</div>${rest.map(i=>card(i,false)).join('')}`:''}
+ <div class="sec-title">ไม่แน่ใจว่าต้องใช้บริการไหน?</div>
+ <div class="card"><div class="cmp">
+  <div class="c-green"><b>รายงานตัว 90 วัน</b>แจ้งว่ายังพักอยู่ที่เดิม ทำทุก 90 วัน · ไม่ได้ขยายวีซ่า</div>
+  <div class="c-blue"><b>ต่ออายุวีซ่า</b>ขยายระยะเวลาที่อยู่ในไทย · ทำก่อนวีซ่าหมดอายุ</div>
+  <div class="c-violet"><b>Re-entry Permit</b>ขออนุญาตก่อนออกนอกประเทศ เพื่อให้วีซ่ายังใช้ได้เมื่อกลับมา</div></div>
+  <button class="btn btn-ghost btn-sm mt12" style="width:100%" onclick="openHelp('ai')">${ic('spark',18)} ถามผู้ช่วย AI</button></div>
+ </div>${nav('select')}`};
+
+/* 4 · Service details & form */
+function field(f){
+ const v=S.form[f.id]??'',e=S.errors[f.id];let inp;
+ if(f.type==='select')inp=`<select onchange="setF('${f.id}',this.value)">${f.opts.map(o=>`<option ${o===v?'selected':''}>${o}</option>`).join('')}</select>`;
+ else if(f.type==='textarea')inp=`<textarea rows="3" placeholder="${f.ph||''}" oninput="setF('${f.id}',this.value)">${esc(v)}</textarea>`;
+ else if(f.type==='chips')inp=`<div class="seg">${f.opts.map(o=>`<button class="${o.v===v?'on':''}" onclick="setF('${f.id}','${o.v}');render()"><b>${o.l}</b><small>${o.s}</small></button>`).join('')}</div>`;
+ else inp=`<input type="${f.type||'text'}" value="${esc(v)}" placeholder="${f.ph||''}" oninput="setF('${f.id}',this.value)">`;
+ return `<div class="field ${e?'err':''}" id="w_${f.id}"><label>${f.l}${f.req?' <i>*</i>':''}</label>${inp}${e?`<div class="errmsg">${ic('alert',14)} ${e}</div>`:''}${f.ex?`<div class="ex"><b>ตัวอย่าง</b>${f.ex}</div>`:''}${f.hint?`<div class="hint">${f.hint}</div>`:''}</div>`}
+function tm30Msg(){const f=S.form,p=S.p;const a=f.newAddress||'(ที่อยู่ใหม่)',o=f.ownerName||'(ชื่อเจ้าของที่พัก)',d=f.moveIn||iso8(TODAY);
+ return{th:`เรียน คุณ${o}\nดิฉัน/ผม ${p.name} สัญชาติ${p.nat} หนังสือเดินทางเลขที่ ${p.passport} ได้ย้ายเข้าพักที่ ${a} ตั้งแต่วันที่ ${fd(d)} รบกวนช่วยแจ้งที่พักคนต่างด้าว (ตม.30) ภายใน 24 ชั่วโมง ขอบคุณค่ะ/ครับ`,
+  en:`Dear ${f.ownerName||'(owner name)'},\nI, ${p.name} (${p.natEn}, passport no. ${p.passport}), moved in to ${f.newAddress||'(new address)'} on ${fde(d)}. Could you kindly submit the TM.30 notification within 24 hours? Thank you.`}}
+function updMsg(){const m=tm30Msg();const a=document.getElementById('m_th'),b=document.getElementById('m_en');if(a)a.textContent=m.th;if(b)b.textContent=m.en}
+SCREENS.form=()=>{
+ const s=SV[S.svc],p=S.p,e=elig(S.svc),fs=s.fields(p),r=reqOf(S.svc);
+ const fee=S.svc==='reentry'?(S.form.type==='multiple'?'3,800 บาท':'1,000 บาท'):s.fee;
+ const ready=s.docs.filter(k=>{const d=DOCS[k];return d.auto||p.wallet.includes(k)||d.opt}).length;
+ let body;
+ if(r)body=`<div class="alert blue mt12"><div class="ai">${ic('clock')}</div><div><b>คุณมีคำขอนี้อยู่ระหว่างดำเนินการ</b><p>${r.id} · ${r.steps[r.step-1]}</p><button class="btn btn-primary btn-sm" onclick="tab('track')">ติดตามสถานะ</button></div></div>`;
+ else if(!e.ok)body=`<div class="alert ${e.soon?'amber':'red'} mt12"><div class="ai">${ic('alert')}</div><div><b>${e.t}</b><p style="white-space:pre-line">${e.m}</p><div class="flex" style="flex-wrap:wrap;gap:8px;margin-top:10px">${e.soon?`<button class="btn btn-primary btn-sm" onclick="toast('ตั้งเตือนเรียบร้อย ระบบจะแจ้งเมื่อถึงช่วงยื่น')">${ic('bell',16)} เตือนฉันเมื่อถึงเวลา</button>`:''}<button class="btn btn-line btn-sm" onclick="openHelp('staff')">ติดต่อเจ้าหน้าที่</button></div></div></div>`;
+ else body=`${e.t?`<div class="alert green mt12"><div class="ai">${ic('shield')}</div><div><b>${e.t}</b><p>${e.m}</p></div></div>`:''}
+  <div class="sec-title">ควรเริ่มเมื่อไร</div><div class="card flex" style="align-items:flex-start"><span style="color:var(--amber)">${ic('clock')}</span><span style="font-size:14px">${s.when}</span></div>
+  <div class="sec-title">ขั้นตอน</div><div class="card"><ol class="steps">${s.steps.map((t,i)=>`<li class="${i===0?'done':i===1?'now':''}">${t}${i===1?'<small>คุณอยู่ที่ขั้นตอนนี้</small>':''}</li>`).join('')}</ol></div>
+  <div class="sec-title">เอกสารที่ต้องใช้ <span class="badge ${ready===s.docs.length?'b-green':'b-amber'}">พร้อม ${ready}/${s.docs.length}</span></div>
+  <div class="card" style="padding:4px 16px">${s.docs.map(k=>{const d=DOCS[k],ok=d.auto||p.wallet.includes(k);return `<div class="row"><span style="color:${ok?'var(--green)':d.opt?'var(--ink-3)':'var(--amber)'}">${ic(ok?'check':'doc',20)}</span><div class="rt"><b style="font-weight:500;font-size:14px">${d.n}</b><small>${d.auto?(d.autoTxt||'ระบบสร้างให้จากข้อมูลที่กรอก'):ok?'มีใน Document Wallet':d.opt?'ไม่บังคับ':'ยังไม่มี · จัดการได้ในขั้นตอนถัดไป'}</small></div></div>`}).join('')}</div>
+  <div class="sec-title">กรอกข้อมูล <span class="muted" style="font-weight:400">กรอกให้แล้วบางส่วน</span></div>
+  <div class="card">${fs.map(field).join('')}
+   <div class="kv" style="border-top:1px solid var(--line);margin-top:4px;padding-top:12px"><span>ค่าธรรมเนียม (ข้อมูลจำลอง)</span><b>${fee}</b></div></div>
+  ${S.svc==='tm30'?`<div class="sec-title">ข้อความสองภาษาถึงเจ้าของที่พัก</div><div class="card"><div class="msgbox"><span class="lbl">ภาษาไทย</span><span id="m_th">${esc(tm30Msg().th)}</span></div><div class="msgbox"><span class="lbl">English</span><span id="m_en">${esc(tm30Msg().en)}</span></div><button class="btn btn-ghost btn-sm mt12" style="width:100%" onclick="copyMsg()">${ic('copy',18)} คัดลอกข้อความ</button></div>`:''}`;
+ return `${appbar(s.short,{sub:'รายละเอียดบริการและแบบฟอร์ม'})}
+ <div class="content">
+ <div class="progress-top"><span class="on"></span><span class="on"></span><span></span></div>
+ <div class="svc-head"><span class="ri ${s.c}">${ic(s.ic,26)}</span><div><h2>${s.name}</h2><p>${s.sub}</p></div></div>
+ ${body}
+ </div>
+ ${(!r&&e.ok)?`<div class="footer-cta"><button class="btn btn-primary" onclick="toChecklist()">ถัดไป: ตรวจสอบเอกสาร ${ic('chev',18)}</button></div>`:''}`};
+
+/* 5 · Checklist & confirmation */
+SCREENS.check=()=>{
+ const s=SV[S.svc],p=S.p,ks=s.docs,ok=ks.filter(k=>docReady(S.docs[k])).length,miss=ks.length-ok,allOK=miss===0;
+ const fs=s.fields(p);
+ const fmt=(f,v)=>f.type==='date'?fd(v):f.type==='chips'?f.opts.find(o=>o.v===v)?.l:esc(v);
+ const row=k=>{const d=DOCS[k],st=S.docs[k];
+  const map={auto:['ok','check',d.autoTxt||'ระบบสร้างให้อัตโนมัติจากข้อมูลที่กรอก'],wallet:['ok','check','ดึงจาก Document Wallet'],upload:['ok','check','อัปโหลดแล้ว · บันทึกใน Wallet'],univ:['ok','check','ได้รับจากมหาวิทยาลัยแล้ว'],owner:['ok','check','ได้รับจากเจ้าของที่พักแล้ว'],opt:['opt','doc',d.why||'ไม่บังคับ'],wait:['wait','clock','กำลังรอเอกสาร…'],miss:['miss','alert','ยังไม่มีเอกสาร']};
+  const [c,i,t]=map[st];
+  const acts=st==='miss'?`<div class="acts">${d.act==='univ'?`<button class="btn btn-primary btn-sm" onclick="docAct('${k}','univ')">${ic('school',16)} ขอจากมหาวิทยาลัย</button>`:''}${d.act==='owner'?`<button class="btn btn-primary btn-sm" onclick="docAct('${k}','owner')">${ic('send',16)} ขอจากเจ้าของที่พัก</button>`:''}<button class="btn ${d.act==='upload'?'btn-primary':'btn-line'} btn-sm" onclick="docAct('${k}','upload')">${ic('upload',16)} อัปโหลดเอง</button></div>`:'';
+  return `<div class="doc"><span class="st ${c}">${ic(i,16)}</span><div class="dt"><b>${d.n}</b><small class="${st==='miss'?'r':''}">${t}</small>${st==='miss'&&d.why?`<small>เหตุผล: ${d.why}</small>`:''}${acts}</div></div>`};
+ return `${appbar('ตรวจสอบก่อนยืนยัน',{sub:s.name})}
+ <div class="content">
+ <div class="progress-top"><span class="on"></span><span class="on"></span><span class="on"></span></div>
+ <div class="card"><div class="flex"><div class="sp"><b style="font-size:15px">ความครบถ้วนของเอกสาร</b><div class="muted">${allOK?'เอกสารครบแล้ว พร้อมยื่น':`ยังขาดอีก ${miss} รายการ`}</div></div><span class="big" style="font-size:24px;color:${allOK?'var(--green)':'var(--amber)'}">${ok}/${ks.length}</span></div>
+  <div class="bar ${allOK?'':'warn'}"><span style="width:${Math.round(ok/ks.length*100)}%"></span></div></div>
+ ${allOK?'':`<div class="alert red mt12"><div class="ai">${ic('alert')}</div><div><b>มีเอกสารที่ต้องจัดการ</b><p>ดูเหตุผลและเลือกวิธีเพิ่มเอกสารได้จากรายการด้านล่าง</p></div></div>`}
+ <div class="sec-title">รายการเอกสาร</div>
+ <div class="card" style="padding:0 16px">${ks.map(row).join('')}</div>
+ <div class="sec-title">ตรวจความสอดคล้องของข้อมูล</div>
+ <div class="card" style="padding:4px 16px">${[['ชื่อ-นามสกุล ตรงกับหนังสือเดินทาง',p.name],['เลขหนังสือเดินทางตรงกับวีซ่า',p.passport],['ที่อยู่ตรงกับการแจ้ง ตม.30 ล่าสุด',S.svc==='tm30'?'ใช้ที่อยู่ใหม่':'ตรงกัน']].map(([a,b])=>`<div class="row"><span style="color:var(--green)">${ic('check',20)}</span><div class="rt"><b style="font-weight:500;font-size:14px">${a}</b><small>${esc(b)}</small></div></div>`).join('')}</div>
+ <div class="sec-title">สรุปข้อมูลที่กรอก <a onclick="back()">${ic('edit',14)} แก้ไข</a></div>
+ <div class="card">${fs.map(f=>`<div class="kv"><span>${f.l}</span><b>${fmt(f,S.form[f.id])||'-'}</b></div>`).join('')}</div>
+ <div class="card mt12"><div class="check ${S.agree?'on':''}" onclick="S.agree=!S.agree;render()"><span class="box">${S.agree?ic('check',16):''}</span><span>ข้าพเจ้ายืนยันว่าข้อมูลและเอกสารทั้งหมดถูกต้องและเป็นความจริง</span></div></div>
+ </div>
+ <div class="footer-cta">${!allOK?`<div class="note">ยังขาดเอกสาร ${miss} รายการ</div>`:!S.agree?`<div class="note">กรุณาทำเครื่องหมายยืนยันข้อมูล</div>`:''}<button class="btn btn-primary" ${allOK&&S.agree?'':'disabled'} onclick="submit()">${S.svc==='tm30'?'ส่งข้อความถึงเจ้าของที่พัก':'ยืนยันและยื่นคำขอ'}</button></div>`};
+
+/* 6 · Tracking & timeline */
+SCREENS.track=()=>{
+ const p=S.p,rs=S.requests;
+ const wd=[];let d=D(iso8(TODAY));while(wd.length<6){d.setDate(d.getDate()+1);if(d.getDay()%6)wd.push(iso8(d))}
+ const DOW=['อา.','จ.','อ.','พ.','พฤ.','ศ.','ส.'];
+ return `${appbar('สถานะและไทม์ไลน์',{sub:'ติดตามคำขอ · กำหนดการ · การแจ้งเตือน'})}
+ <div class="content">
+ <div class="sec-title" style="margin-top:4px">คำขอของฉัน</div>
+ ${rs.length?rs.map(r=>{const s=SV[r.svc];return `<div class="card" style="margin-bottom:10px"><div class="flex"><span class="ri ${s.c}" style="width:40px;height:40px;border-radius:12px;display:grid;place-items:center">${ic(s.ic,20)}</span><div class="sp"><b style="font-size:14.5px;display:block;line-height:1.3">${s.name}</b><span class="muted">${r.id} · ยื่นเมื่อ ${fd(r.date)}</span></div>${r.done?'<span class="badge b-green">เสร็จสิ้น</span>':'<span class="badge b-blue">กำลังดำเนินการ</span>'}</div>
+  <ul class="track">${r.steps.map((t,i)=>`<li class="${i<r.step-1||r.done?'done':i===r.step-1?'now':''}">${t}${i===r.step-1&&!r.done?'<small>สถานะปัจจุบัน</small>':''}</li>`).join('')}</ul>
+  ${r.done?`<div class="alert green mt12"><div class="ai">${ic('check')}</div><div><b>${r.result}</b><p>ชุดเอกสารและใบรับถูกบันทึกใน Document Wallet</p></div></div>`:`<button class="btn btn-ghost btn-sm mt12" style="width:100%" onclick="advance('${r.id}')">${ic('play',16)} จำลองความคืบหน้าสถานะ</button>`}</div>`}).join('')
+ :`<div class="card empty"><div class="ei c-blue">${ic('doc',30)}</div><b>ยังไม่มีคำขอ</b><p class="muted">เลือกบริการเพื่อเริ่มยื่นคำขอ</p><button class="btn btn-primary btn-sm mt12" style="margin:12px auto 0" onclick="tab('select')">เลือกบริการ</button></div>`}
+ <div class="sec-title">ไทม์ไลน์การพำนัก</div>
+ <div class="card" style="padding:2px 14px"><ul class="tl">${timeline().map(tlItem).join('')}</ul></div>
+ <div class="sec-title">แจ้งเตือนล่วงหน้า</div>
+ <div class="card" style="padding:4px 16px">${[['d30','ก่อนครบกำหนด 30 วัน','เริ่มเตรียมเอกสาร'],['d7','ก่อนครบกำหนด 7 วัน','เตือนให้ยื่นคำขอ'],['d1','ก่อนครบกำหนด 1 วัน','เตือนครั้งสุดท้าย']].map(([k,a,b])=>`<div class="row"><div class="ri c-amber">${ic('bell',20)}</div><div class="rt"><b>${a}</b><small>${b} · แจ้งทางแอปและอีเมล</small></div><button class="toggle ${S.rem[k]?'on':''}" onclick="S.rem['${k}']=!S.rem['${k}'];render()" aria-label="${a}"></button></div>`).join('')}</div>
+ <div class="sec-title">นัดหมาย ตม. ล่วงหน้า</div>
+ <div class="card">${S.appt?`<div class="flex"><span class="ri c-green" style="width:44px;height:44px;border-radius:12px;display:grid;place-items:center">${ic('cal')}</span><div class="sp"><b style="display:block">${fd(S.appt.d)} · ${S.appt.t} น.</b><span class="muted">สำนักงานตรวจคนเข้าเมือง (จำลอง)</span></div></div><button class="btn btn-line btn-sm mt12" style="width:100%" onclick="S.appt=null;S.apDate=null;S.apTime=null;render();toast('ยกเลิกนัดหมายแล้ว')">ยกเลิกนัดหมาย</button>`
+ :`<div class="muted" style="margin-bottom:10px">${ic('pin',14)} สำหรับกรณีที่ต้องไปยื่นด้วยตนเอง ลดเวลารอคิว</div>
+  <div class="slots">${wd.map(x=>{const y=D(x);return `<button class="slot ${S.apDate===x?'on':''}" onclick="S.apDate='${x}';render()">${DOW[y.getDay()]}<b>${y.getDate()}</b>${TH_M[y.getMonth()]}</button>`}).join('')}</div>
+  <div class="times">${['09:00','10:30','13:30','15:00'].map((t,i)=>`<button class="${S.apTime===t?'on':''}" ${i===1&&S.apDate===wd[0]?'disabled':''} onclick="S.apTime='${t}';render()">${t}</button>`).join('')}</div>
+  <button class="btn btn-primary btn-sm" style="width:100%;height:44px" onclick="book()">ยืนยันนัดหมาย</button>`}</div>
+ </div>${nav('track')}`};
+
+/* ---------- modal ---------- */
+function showModal(){
+ const m=S.modal,s=SV[m.svc],w=document.getElementById('modalwrap');
+ w.innerHTML=`<div class="scrim"></div><div class="modal"><div class="mi">${ic('check',38)}</div><h3>${m.svc==='tm30'?'ส่งข้อความเรียบร้อย':'ยื่นคำขอสำเร็จ'}</h3><p>${s.name}</p>
+ <div class="refno">หมายเลขอ้างอิง<b>${m.id}</b></div>
+ <p style="font-size:13px">ชุดเอกสารถูกบันทึกใน Document Wallet แล้ว และระบบจะแจ้งเตือนเมื่อสถานะเปลี่ยน</p>
+ <button class="btn btn-primary mt16" onclick="closeModal('track')">ติดตามสถานะ</button><button class="btn mt8" style="color:var(--ink-2)" onclick="closeModal('home')">กลับหน้าหลัก</button></div>`;
+ w.classList.add('show');
+}
+function closeModal(to){document.getElementById('modalwrap').classList.remove('show');S.agree=false;S.svc=null;tab(to)}
+
+/* ---------- help sheet ---------- */
+const QA={
+ diff:{q:'รายงานตัว 90 วัน ต่อวีซ่า และ Re-entry ต่างกันอย่างไร?',a:'• รายงานตัว 90 วัน: แจ้งว่ายังพักอยู่ที่อยู่เดิม ทำทุก 90 วัน ไม่ได้ขยายวีซ่า\n• ต่ออายุวีซ่า: ขยายระยะเวลาที่อยู่ในไทย ต้องทำก่อนวีซ่าหมดอายุ\n• Re-entry: ขออนุญาตก่อนออกนอกประเทศ เพื่อให้วีซ่าเดิมยังใช้ได้เมื่อกลับมา'},
+ reentry:{q:'ถ้าออกนอกประเทศโดยไม่ขอ Re-entry จะเป็นอย่างไร?',a:'การอนุญาตให้พำนักและวีซ่าเดิมจะสิ้นสุดทันทีเมื่อออกจากไทย คุณจะต้องขอวีซ่าใหม่ก่อนกลับเข้ามา จึงควรขอ Re-entry ให้เรียบร้อยก่อนวันเดินทาง'},
+ move:{q:'ย้ายที่พักใหม่ต้องทำอะไรบ้าง?',a:'เจ้าของที่พักต้องแจ้ง ตม.30 ภายใน 24 ชั่วโมงหลังคุณย้ายเข้า คุณใช้บริการ "แจ้งที่พัก (ตม.30)" เพื่อสร้างข้อความสองภาษาส่งให้เจ้าของที่พักได้ทันที'},
+ when:{q:'ควรเริ่มเตรียมต่อวีซ่าเมื่อไร?',a:'แนะนำให้เริ่มเตรียม 30 วันก่อนวีซ่าหมดอายุ โดยเฉพาะหนังสือรับรองจากมหาวิทยาลัยซึ่งอาจใช้เวลา 3–5 วันทำการ ขอผ่านแอปได้ในขั้นตอนตรวจเอกสาร'}
+};
+function openHelp(t='ai',q){S.help.open=true;S.help.tab=t;renderSheet();if(q)ask(q)}
+function closeHelp(){S.help.open=false;renderSheet()}
+function ask(k,free){
+ const h=S.help;let a;
+ if(free){h.chat.push({me:1,t:free});const s=free.toLowerCase();
+  a=/90/.test(s)&&/(ต่อ|extend)/.test(s)?QA.diff.a:/re-?entry|ออกนอก|กลับบ้าน/.test(s)?QA.reentry.a:/ย้าย|ตม\.?30|tm\.?30|ที่พัก/.test(s)?QA.move.a:/ต่อ|หมดอายุ|extend/.test(s)?QA.when.a:/90/.test(s)?QA.diff.a:'ขอบคุณสำหรับคำถาม ต้นแบบนี้ตอบได้เฉพาะคำถามตัวอย่าง หากต้องการคำตอบเฉพาะกรณี แตะแท็บ "เจ้าหน้าที่" เพื่อคุยกับเจ้าหน้าที่ได้เลย'}
+ else{h.chat.push({me:1,t:QA[k].q});a=QA[k].a}
+ h.typing=true;renderSheet();
+ setTimeout(()=>{h.typing=false;h.chat.push({t:a});renderSheet()},700);
+}
+function sendFree(){const i=document.getElementById('ask');const v=i&&i.value.trim();if(!v)return;ask(null,v)}
+function renderSheet(){
+ const w=document.getElementById('sheetwrap'),h=S.help;
+ if(!h.open){w.classList.remove('show');w.innerHTML='';return}
+ let body,foot='';
+ if(h.tab==='ai'){
+  body=`<div class="msg bot">สวัสดีครับ ผมคือผู้ช่วย AI ด้านวีซ่าและการพำนัก ถามได้ทั้งภาษาไทย English 中文\nเลือกคำถามด้านล่าง หรือพิมพ์คำถามของคุณ</div>
+  ${h.chat.map(m=>`<div class="msg ${m.sys?'sys':m.me?'me':'bot'}">${esc(m.t)}</div>`).join('')}
+  ${h.typing?`<div class="msg bot"><span class="typing"><i></i><i></i><i></i></span></div>`:''}
+  ${!h.typing?`<div class="qchips">${Object.keys(QA).filter(k=>!h.chat.some(m=>m.t===QA[k].q)).map(k=>`<button onclick="ask('${k}')">${QA[k].q}</button>`).join('')}</div>`:''}
+  <p class="muted" style="font-size:11.5px;text-align:center">คำตอบเป็นข้อมูลจำลองเพื่อการสาธิต</p>`;
+  foot=`<div class="sheet-f"><input id="ask" placeholder="พิมพ์คำถาม…" onkeydown="if(event.key==='Enter')sendFree()"><button class="send" onclick="sendFree()" aria-label="ส่ง">${ic('send',20)}</button></div>`;
+ }else if(h.tab==='guide'){
+  body=`<div class="card"><b style="display:block;margin-bottom:4px">คู่มือหน้าที่ระหว่างพำนัก</b><span class="muted">สิ่งที่นักศึกษาต่างชาติต้องทำ</span>
+  ${[['แจ้งที่พัก (ตม.30)','ทุกครั้งที่ย้ายที่พัก หรือกลับจากต่างประเทศ เจ้าของที่พักต้องแจ้งภายใน 24 ชั่วโมง'],['รายงานตัวทุก 90 วัน','นับจากวันเข้าประเทศครั้งล่าสุด ยื่นออนไลน์ได้ 15 วันก่อนครบกำหนด และหลังครบไม่เกิน 7 วัน'],['ต่ออายุวีซ่า','ยื่นก่อนวีซ่าหมดอายุ ใช้หนังสือรับรองจากมหาวิทยาลัยที่ออกไม่เกิน 30 วัน'],['Re-entry Permit','ต้องขอก่อนเดินทางออกนอกประเทศทุกครั้ง (หรือขอแบบหลายครั้ง)'],['TDAC','กรอกบัตรขาเข้าดิจิทัลภายใน 3 วันก่อนเดินทางถึงไทย']].map(([a,b])=>`<details class="acc"><summary>${a}${ic('chev',18)}</summary><p>${b}</p></details>`).join('')}</div>
+  <div class="sec-title">ศูนย์ความรู้</div>
+  ${[['ED กับ ED Plus ต่างกันอย่างไร','book'],['ตัวอย่างการกรอกแบบ ตม.7','doc'],['เตรียมเอกสารจากมหาวิทยาลัย','school']].map(([a,i])=>`<button class="svc" onclick="toast('เปิดบทความ (จำลอง)')"><span class="ri c-blue">${ic(i)}</span><span class="rt"><b style="font-size:14px">${a}</b></span>${ic('chev',18)}</button>`).join('')}`;
+ }else{
+  const queued=h.chat.some(m=>m.staff);
+  body=`<div class="empty" style="padding-top:12px"><div class="ei c-violet">${ic('people',30)}</div><b style="font-size:16px">คุยกับเจ้าหน้าที่</b><p class="muted mt8">สำหรับกรณีที่ซับซ้อน เช่น วีซ่าหมดอายุ ข้อมูลไม่ตรงกับระบบ หรือต้องการคำแนะนำเฉพาะ</p></div>
+  ${queued?`<div class="alert green"><div class="ai">${ic('check')}</div><div><b>อยู่ในคิวลำดับที่ 3</b><p>เวลารอโดยประมาณ 5 นาที · เจ้าหน้าที่จะเห็นข้อมูลวีซ่าของคุณโดยไม่ต้องอธิบายซ้ำ</p></div></div>`
+  :`<div class="card"><div class="field"><label>เรื่องที่ต้องการปรึกษา</label><select id="topic">${['ต่ออายุวีซ่า','รายงานตัว 90 วัน','แจ้งที่พัก ตม.30','Re-entry Permit','อื่น ๆ'].map(o=>`<option>${o}</option>`).join('')}</select></div>
+   <div class="field"><label>ภาษาที่ต้องการ</label><select><option>ไทย</option><option>English</option><option>中文</option></select></div>
+   <button class="btn btn-primary" onclick="S.help.chat.push({staff:1,sys:1,t:'เชื่อมต่อเจ้าหน้าที่แล้ว · เรื่อง '+document.getElementById('topic').value});renderSheet();toast('ส่งต่อเจ้าหน้าที่แล้ว')">เริ่มแชทกับเจ้าหน้าที่</button></div>`}
+  <div class="card mt12 flex"><span style="color:var(--blue)">${ic('clock')}</span><span class="muted">เวลาทำการ จ.–ศ. 08:30–16:30 น. (ข้อมูลจำลอง)</span></div>`;
+ }
+ w.innerHTML=`<div class="scrim" onclick="closeHelp()"></div><div class="sheet"><div class="sheet-h"><div class="grab"></div><div class="sheet-top"><h3>ช่วยเหลือ</h3><button class="iconbtn" onclick="closeHelp()" aria-label="ปิด">${ic('x')}</button></div>
+ <div class="tabs">${[['ai','ผู้ช่วย AI'],['guide','คู่มือ'],['staff','เจ้าหน้าที่']].map(([k,l])=>`<button class="${h.tab===k?'on':''}" onclick="S.help.tab='${k}';renderSheet()">${l}</button>`).join('')}</div></div>
+ <div class="sheet-b" id="sb_body">${body}</div>${foot}</div>`;
+ w.classList.add('show');
+ const b=document.getElementById('sb_body');if(b&&h.tab==='ai')b.scrollTop=b.scrollHeight;
+}
+
+render(true);
+</script>
+</body>
+</html>
